@@ -91,3 +91,21 @@ function post_config($thiss)
 
     return $rst;
 }
+
+//获取文章首图的 method，返回的是图片的 direct link
+function getPostFirstImg($cid) {
+    $db = Typecho_Db:: get();
+    $rs = $db -> fetchRow($db -> select('table.contents.text')
+        -> from('table.contents')
+        -> where('table.contents.cid=?', $cid)
+        -> order('table.contents.cid', Typecho_Db:: SORT_ASC)
+        -> limit(1));
+    $imgUrl = [];
+    $num = preg_match_all("/http(.*?)(.jpg|.png)/", $rs['text'], $imgUrl);
+    if ($num == 0) {
+        // 这是我博客的站点 logo 图片 direct link
+        return 'https://pic1.imgdb.cn/item/62a0287d0947543129ca2b11.jpg';
+    } else {
+        return $imgUrl[0][0];
+    }
+}
